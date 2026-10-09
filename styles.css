@@ -163,9 +163,9 @@ button {
 .cover__star--corner,
 .cover__star--shooting,
 .cover__star--cluster {
-  opacity: 0.1;
-  filter: brightness(1.2) saturate(0.86);
-  animation: star-breathe 2.8s ease-in-out infinite;
+  opacity: 0.18;
+  filter: brightness(1.28) saturate(0.84);
+  animation: star-breathe 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 .cover__gleam--nineteen {
@@ -429,10 +429,10 @@ button {
 @keyframes star-breathe {
   0%,
   100% {
-    transform: scale(0.98);
+    transform: scale(0.9);
   }
   50% {
-    transform: scale(1.04);
+    transform: scale(1.12);
   }
 }
 
