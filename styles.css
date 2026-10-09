@@ -162,7 +162,7 @@ button {
 .cover__star--cluster {
   opacity: 0.1;
   filter: brightness(1.2) saturate(0.86);
-  animation: star-float 5.8s ease-in-out infinite;
+  animation: star-breathe 2.8s ease-in-out infinite;
 }
 
 .cover__gleam--nineteen {
@@ -423,13 +423,13 @@ button {
   }
 }
 
-@keyframes star-float {
+@keyframes star-breathe {
   0%,
   100% {
-    transform: translate3d(0, -0.22%, 0);
+    transform: scale(0.996);
   }
   50% {
-    transform: translate3d(0, 0.22%, 0);
+    transform: scale(1.012);
   }
 }
 
