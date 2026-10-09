@@ -113,6 +113,7 @@ button {
 }
 
 .cover__star--corner {
+  transform-origin: 12% 9%;
   -webkit-mask-image: radial-gradient(
     ellipse 21% 18% at 12% 9%,
     #000 0 52%,
@@ -128,6 +129,7 @@ button {
 }
 
 .cover__star--shooting {
+  transform-origin: 72% 35%;
   -webkit-mask-image: radial-gradient(
     ellipse 20% 11% at 72% 35%,
     #000 0 50%,
@@ -143,6 +145,7 @@ button {
 }
 
 .cover__star--cluster {
+  transform-origin: 31% 59%;
   -webkit-mask-image: radial-gradient(
     ellipse 30% 22% at 31% 59%,
     #000 0 52%,
@@ -426,10 +429,10 @@ button {
 @keyframes star-breathe {
   0%,
   100% {
-    transform: scale(0.996);
+    transform: scale(0.98);
   }
   50% {
-    transform: scale(1.012);
+    transform: scale(1.04);
   }
 }
 
