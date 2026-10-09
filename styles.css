@@ -77,7 +77,8 @@ button {
 }
 
 .cover__image,
-.cover__gleam {
+.cover__gleam,
+.cover__star {
   position: absolute;
   inset: 0;
   display: block;
@@ -99,6 +100,64 @@ button {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   will-change: opacity, filter;
+}
+
+.cover__star {
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transform-origin: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  will-change: opacity, filter, transform;
+}
+
+.cover__star--corner {
+  -webkit-mask-image: radial-gradient(
+    ellipse 21% 18% at 12% 9%,
+    #000 0 52%,
+    rgba(0, 0, 0, 0.68) 72%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 21% 18% at 12% 9%,
+    #000 0 52%,
+    rgba(0, 0, 0, 0.68) 72%,
+    transparent 100%
+  );
+  animation: corner-stars 6.4s ease-in-out infinite;
+}
+
+.cover__star--shooting {
+  -webkit-mask-image: radial-gradient(
+    ellipse 20% 11% at 72% 35%,
+    #000 0 50%,
+    rgba(0, 0, 0, 0.66) 70%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 20% 11% at 72% 35%,
+    #000 0 50%,
+    rgba(0, 0, 0, 0.66) 70%,
+    transparent 100%
+  );
+  animation: shooting-star 5.2s ease-in-out 0.7s infinite;
+}
+
+.cover__star--cluster {
+  -webkit-mask-image: radial-gradient(
+    ellipse 30% 22% at 31% 59%,
+    #000 0 52%,
+    rgba(0, 0, 0, 0.7) 72%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 30% 22% at 31% 59%,
+    #000 0 52%,
+    rgba(0, 0, 0, 0.7) 72%,
+    transparent 100%
+  );
+  animation: star-cluster 7.1s ease-in-out 1.4s infinite;
 }
 
 .cover__gleam--nineteen {
@@ -359,6 +418,63 @@ button {
   }
 }
 
+@keyframes corner-stars {
+  0%,
+  100% {
+    opacity: 0.035;
+    filter: brightness(1.06) saturate(0.9);
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  42% {
+    opacity: 0.3;
+    filter: brightness(1.42) saturate(0.76);
+    transform: translate3d(0.2%, -0.28%, 0) rotate(0.08deg);
+  }
+  66% {
+    opacity: 0.08;
+    filter: brightness(1.16) saturate(0.86);
+    transform: translate3d(-0.05%, 0.08%, 0) rotate(-0.025deg);
+  }
+}
+
+@keyframes shooting-star {
+  0%,
+  100% {
+    opacity: 0.03;
+    filter: brightness(1.05) saturate(0.88);
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  36% {
+    opacity: 0.27;
+    filter: brightness(1.46) saturate(0.74);
+    transform: translate3d(-0.22%, -0.16%, 0) rotate(-0.07deg);
+  }
+  58% {
+    opacity: 0.075;
+    filter: brightness(1.14) saturate(0.84);
+    transform: translate3d(0.08%, 0.04%, 0) rotate(0.025deg);
+  }
+}
+
+@keyframes star-cluster {
+  0%,
+  100% {
+    opacity: 0.04;
+    filter: brightness(1.06) saturate(0.9);
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  46% {
+    opacity: 0.32;
+    filter: brightness(1.4) saturate(0.77);
+    transform: translate3d(-0.18%, -0.24%, 0) rotate(-0.09deg);
+  }
+  68% {
+    opacity: 0.09;
+    filter: brightness(1.17) saturate(0.86);
+    transform: translate3d(0.06%, 0.06%, 0) rotate(0.03deg);
+  }
+}
+
 @media (max-aspect-ratio: 1087 / 1311) {
   .cover__portrait {
     width: max(100vw, calc(100svh * 1087 / 1311));
@@ -376,12 +492,22 @@ button {
     animation: none;
   }
 
+  .cover__star {
+    animation: none;
+  }
+
   .cover__gleam--nineteen {
     opacity: 0.08;
   }
 
   .cover__gleam--greeting {
     opacity: 0.06;
+  }
+
+  .cover__star--corner,
+  .cover__star--shooting,
+  .cover__star--cluster {
+    opacity: 0.07;
   }
 
   .start-button__rule,
