@@ -211,13 +211,18 @@
           点击城市，打开我们的回忆
         </p>
 
-        <div class="journey-continue" aria-hidden="true">
+        <button
+          id="continueButton"
+          class="journey-continue"
+          type="button"
+          aria-label="继续前往下一页"
+        >
           <span>CONTINUE</span>
-          <svg viewBox="0 0 34 16">
+          <svg viewBox="0 0 34 16" aria-hidden="true">
             <path d="M2 8h27"></path>
             <path d="m23 2 6 6-6 6"></path>
           </svg>
-        </div>
+        </button>
 
         <dialog id="memoryDialog" class="memory-dialog" aria-labelledby="memoryTitle">
           <div class="memory-dialog__scrim" data-close-dialog></div>
@@ -253,6 +258,22 @@
             </div>
           </article>
         </dialog>
+      </section>
+
+      <section id="afterPage" class="after-page" aria-label="后续页面" hidden>
+        <div class="after-page__backdrop" aria-hidden="true"></div>
+        <div class="after-page__content">
+          <p class="after-page__eyebrow">TO BE CONTINUED</p>
+          <h1>故事还没有写完</h1>
+          <p>下一页，留给还没一起走过的以后。</p>
+        </div>
+        <button id="afterBackButton" class="after-page__back" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <span>BACK</span>
+        </button>
       </section>
     </main>
 

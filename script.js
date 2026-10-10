@@ -1,7 +1,10 @@
 const coverPage = document.querySelector("#coverPage");
 const nextPage = document.querySelector("#nextPage");
+const afterPage = document.querySelector("#afterPage");
 const startButton = document.querySelector("#startButton");
 const backButton = document.querySelector("#backButton");
+const continueButton = document.querySelector("#continueButton");
+const afterBackButton = document.querySelector("#afterBackButton");
 const photoCount = document.querySelector("#photoCount");
 const cityLayer = document.querySelector("#cityLayer");
 const memoryDialog = document.querySelector("#memoryDialog");
@@ -466,6 +469,8 @@ function showNextPage() {
 function showCoverPage() {
   window.clearTimeout(transitionTimer);
   closeMemory();
+  afterPage.classList.remove("is-visible");
+  afterPage.hidden = true;
   nextPage.classList.remove("is-visible");
   nextPage.hidden = true;
   coverPage.hidden = false;
@@ -476,8 +481,41 @@ function showCoverPage() {
   });
 }
 
+function showAfterPage() {
+  window.clearTimeout(transitionTimer);
+  closeMemory();
+  continueButton.disabled = true;
+  nextPage.classList.add("is-leaving");
+
+  transitionTimer = window.setTimeout(() => {
+    nextPage.hidden = true;
+    nextPage.classList.remove("is-leaving");
+    afterPage.hidden = false;
+
+    window.requestAnimationFrame(() => {
+      afterPage.classList.add("is-visible");
+      afterBackButton.focus({ preventScroll: true });
+    });
+  }, 700);
+}
+
+function showJourneyPage() {
+  window.clearTimeout(transitionTimer);
+  afterPage.classList.remove("is-visible");
+  afterPage.hidden = true;
+  nextPage.hidden = false;
+  continueButton.disabled = false;
+
+  window.requestAnimationFrame(() => {
+    nextPage.classList.add("is-visible");
+    continueButton.focus({ preventScroll: true });
+  });
+}
+
 startButton.addEventListener("click", showNextPage);
 backButton.addEventListener("click", showCoverPage);
+continueButton.addEventListener("click", showAfterPage);
+afterBackButton.addEventListener("click", showJourneyPage);
 
 slideButtons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -529,6 +567,13 @@ if (pageParams.get("page") === "journey") {
   coverPage.hidden = true;
   nextPage.hidden = false;
   nextPage.classList.add("is-visible");
+}
+
+if (pageParams.get("page") === "after") {
+  coverPage.hidden = true;
+  nextPage.hidden = true;
+  afterPage.hidden = false;
+  afterPage.classList.add("is-visible");
 }
 
 const requestedMemoryParam = pageParams.get("memory");
