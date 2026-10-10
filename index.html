@@ -68,6 +68,8 @@
           </svg>
         </button>
 
+        <div class="journey-background" aria-hidden="true"></div>
+
         <div class="journey-atmosphere" aria-hidden="true">
           <span class="journey-atmosphere__glow journey-atmosphere__glow--blue"></span>
           <span class="journey-atmosphere__glow journey-atmosphere__glow--rose"></span>
@@ -100,23 +102,23 @@
           >
             <defs>
               <radialGradient id="globe-wash" cx="38%" cy="28%" r="78%">
-                <stop offset="0" stop-color="#d9f7c8"></stop>
-                <stop offset="0.42" stop-color="#8fc585"></stop>
-                <stop offset="0.76" stop-color="#477d68"></stop>
-                <stop offset="1" stop-color="#234d57"></stop>
+                <stop offset="0" stop-color="#d8f1ff"></stop>
+                <stop offset="0.38" stop-color="#78c2ec"></stop>
+                <stop offset="0.72" stop-color="#3579b6"></stop>
+                <stop offset="1" stop-color="#143b72"></stop>
               </radialGradient>
               <linearGradient id="globe-land" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#dff5b9"></stop>
-                <stop offset="0.5" stop-color="#93cc82"></stop>
-                <stop offset="1" stop-color="#4d946e"></stop>
+                <stop offset="0" stop-color="#e4f7ff"></stop>
+                <stop offset="0.5" stop-color="#8bd2ef"></stop>
+                <stop offset="1" stop-color="#4d91c2"></stop>
               </linearGradient>
               <radialGradient id="planet-aura">
-                <stop offset="0.52" stop-color="#b8ffdb" stop-opacity="0.28"></stop>
-                <stop offset="0.72" stop-color="#c2c9ff" stop-opacity="0.16"></stop>
-                <stop offset="1" stop-color="#dcd4ff" stop-opacity="0"></stop>
+                <stop offset="0.52" stop-color="#9adfff" stop-opacity="0.34"></stop>
+                <stop offset="0.72" stop-color="#8eb9ff" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#b7ccff" stop-opacity="0"></stop>
               </radialGradient>
               <clipPath id="globe-clip">
-                <circle cx="600" cy="405" r="310"></circle>
+                <circle cx="600" cy="405" r="330"></circle>
               </clipPath>
               <filter id="globe-soft-glow" x="-45%" y="-45%" width="190%" height="190%">
                 <feGaussianBlur stdDeviation="14"></feGaussianBlur>
@@ -130,43 +132,50 @@
               </filter>
             </defs>
 
-            <ellipse class="journey-map__planet-shadow" cx="600" cy="718" rx="265" ry="34"></ellipse>
-            <circle class="journey-map__planet-aura" cx="600" cy="405" r="375"></circle>
+            <ellipse class="journey-map__planet-shadow" cx="600" cy="740" rx="284" ry="36"></ellipse>
+            <circle class="journey-map__planet-aura" cx="600" cy="405" r="398"></circle>
             <circle
               class="journey-map__planet-glow"
               cx="600"
               cy="405"
-              r="337"
+              r="358"
               filter="url(#globe-soft-glow)"
             ></circle>
 
             <g clip-path="url(#globe-clip)">
-              <circle class="journey-map__globe" cx="600" cy="405" r="310"></circle>
+              <circle class="journey-map__globe" cx="600" cy="405" r="330"></circle>
 
-              <g class="journey-map__landmass" transform="translate(175 100) scale(0.64)">
-                <path
-                  d="M209 201C272 156 330 157 384 132C438 108 486 81 541 104C587 123 612 91 661 111C714 132 731 180 782 190C832 199 888 180 934 216C979 251 965 302 1002 336C1037 369 1079 399 1062 455C1047 504 988 488 951 529C912 572 877 598 829 590C779 581 749 626 698 642C646 658 593 627 541 648C488 669 430 651 384 619C339 587 288 578 264 530C241 484 199 456 205 405C211 355 168 321 170 278C172 239 181 218 209 201Z"
-                ></path>
-                <path
-                  class="journey-map__landmass-small"
-                  d="M1050 610C1081 589 1117 610 1108 641C1097 676 1054 676 1034 651C1021 634 1032 621 1050 610Z"
-                ></path>
+              <g class="journey-map__sphere-surface">
+                <g transform="translate(600 405) scale(1.065) translate(-600 -405)">
+                  <g class="journey-map__sphere-spin">
+                    <g class="journey-map__landmass" transform="translate(175 100) scale(0.64)">
+                      <path
+                        d="M209 201C272 156 330 157 384 132C438 108 486 81 541 104C587 123 612 91 661 111C714 132 731 180 782 190C832 199 888 180 934 216C979 251 965 302 1002 336C1037 369 1079 399 1062 455C1047 504 988 488 951 529C912 572 877 598 829 590C779 581 749 626 698 642C646 658 593 627 541 648C488 669 430 651 384 619C339 587 288 578 264 530C241 484 199 456 205 405C211 355 168 321 170 278C172 239 181 218 209 201Z"
+                      ></path>
+                      <path
+                        class="journey-map__landmass-small"
+                        d="M1050 610C1081 589 1117 610 1108 641C1097 676 1054 676 1034 651C1021 634 1032 621 1050 610Z"
+                      ></path>
+                    </g>
+
+                    <path
+                      class="journey-map__cloud"
+                      d="M318 272C378 228 443 246 487 292C531 336 600 310 652 332C705 354 747 401 724 445C700 491 627 480 570 496C513 512 449 530 392 496C334 462 282 410 296 350C301 325 306 293 318 272Z"
+                    ></path>
+                    <path
+                      class="journey-map__cloud journey-map__cloud--two"
+                      d="M607 553C662 522 729 543 757 590C784 636 750 688 698 702C646 716 577 694 555 647C536 606 565 576 607 553Z"
+                    ></path>
+                  </g>
+
+                  <ellipse class="journey-map__globe-shine" cx="484" cy="265" rx="126" ry="92"></ellipse>
+                  <ellipse class="journey-map__globe-shine journey-map__globe-shine--small" cx="547" cy="207" rx="48" ry="27"></ellipse>
+                </g>
               </g>
-
-              <path
-                class="journey-map__cloud"
-                d="M318 272C378 228 443 246 487 292C531 336 600 310 652 332C705 354 747 401 724 445C700 491 627 480 570 496C513 512 449 530 392 496C334 462 282 410 296 350C301 325 306 293 318 272Z"
-              ></path>
-              <path
-                class="journey-map__cloud journey-map__cloud--two"
-                d="M607 553C662 522 729 543 757 590C784 636 750 688 698 702C646 716 577 694 555 647C536 606 565 576 607 553Z"
-              ></path>
-              <ellipse class="journey-map__globe-shine" cx="484" cy="265" rx="126" ry="92"></ellipse>
-              <ellipse class="journey-map__globe-shine journey-map__globe-shine--small" cx="547" cy="207" rx="48" ry="27"></ellipse>
               <ellipse class="journey-map__globe-shade" cx="671" cy="513" rx="216" ry="181"></ellipse>
             </g>
 
-            <circle class="journey-map__globe-outline" cx="600" cy="405" r="310"></circle>
+            <circle class="journey-map__globe-outline" cx="600" cy="405" r="330"></circle>
             <ellipse class="journey-map__orbit" cx="600" cy="415" rx="376" ry="104"></ellipse>
             <path class="journey-map__orbit-tick" d="M230 417h26M944 417h26"></path>
 
@@ -201,6 +210,14 @@
           <span class="journey-hint__spark" aria-hidden="true"></span>
           点击城市，打开我们的回忆
         </p>
+
+        <div class="journey-continue" aria-hidden="true">
+          <span>CONTINUE</span>
+          <svg viewBox="0 0 34 16">
+            <path d="M2 8h27"></path>
+            <path d="m23 2 6 6-6 6"></path>
+          </svg>
+        </div>
 
         <dialog id="memoryDialog" class="memory-dialog" aria-labelledby="memoryTitle">
           <div class="memory-dialog__scrim" data-close-dialog></div>

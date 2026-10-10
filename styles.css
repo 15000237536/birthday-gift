@@ -1472,11 +1472,11 @@ button {
   padding: clamp(42px, 5.6svh, 62px) 24px 14px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 42%, rgba(208, 255, 192, 0.58), transparent 17%),
-    radial-gradient(circle at 50% 105%, rgba(255, 247, 198, 0.88), transparent 43%),
-    radial-gradient(ellipse at 17% 11%, rgba(90, 157, 255, 0.58), transparent 32%),
-    radial-gradient(ellipse at 86% 18%, rgba(216, 144, 255, 0.46), transparent 33%),
-    linear-gradient(180deg, #252a53 0%, #484b78 37%, #897fa0 64%, #e6d6ce 100%);
+    radial-gradient(circle at 50% 39%, rgba(119, 198, 255, 0.42), transparent 20%),
+    radial-gradient(circle at 50% 108%, rgba(230, 171, 255, 0.32), transparent 45%),
+    radial-gradient(ellipse at 11% 8%, rgba(60, 121, 255, 0.46), transparent 37%),
+    radial-gradient(ellipse at 91% 14%, rgba(161, 99, 247, 0.43), transparent 37%),
+    linear-gradient(180deg, #181c50 0%, #2a2f70 33%, #55498c 64%, #9889bb 100%);
   color: #f8f7ff;
 }
 
@@ -1485,22 +1485,60 @@ button {
   inset: 0;
   z-index: 0;
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255, 235, 191, 0.68) 0 1px, transparent 1.6px),
-    radial-gradient(circle, rgba(213, 238, 255, 0.62) 0 0.8px, transparent 1.4px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.96) 0 1.1px, transparent 1.7px),
+    radial-gradient(circle, rgba(193, 226, 255, 0.9) 0 0.9px, transparent 1.5px),
+    radial-gradient(circle, rgba(255, 225, 169, 0.82) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(212, 193, 255, 0.84) 0 0.8px, transparent 1.5px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0 1.8px, transparent 2.8px);
   background-position:
     18px 24px,
     72px 51px,
-    118px 93px;
+    118px 93px,
+    41px 147px,
+    210px 351px;
   background-size:
-    171px 153px,
-    139px 127px,
-    223px 199px;
+    183px 171px,
+    127px 113px,
+    211px 197px,
+    89px 83px,
+    347px 313px;
   content: "";
-  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.78) 67%, transparent 100%);
-  opacity: 0.68;
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.94) 68%, rgba(0, 0, 0, 0.6) 100%);
+  opacity: 0.88;
   pointer-events: none;
   animation: atmosphere-drift 24s linear infinite;
+}
+
+.next-page::after {
+  position: fixed;
+  inset: -8%;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(95, 170, 255, 0.16), transparent 27%),
+    radial-gradient(ellipse at 13% 72%, rgba(158, 104, 241, 0.25), transparent 33%),
+    radial-gradient(ellipse at 87% 61%, rgba(79, 125, 235, 0.23), transparent 31%);
+  content: "";
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  pointer-events: none;
+  animation: nebula-breathe 18s ease-in-out infinite;
+}
+
+.journey-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25, 25, 80, 0.38),
+      rgba(53, 39, 115, 0.36) 52%,
+      rgba(112, 75, 151, 0.3)
+    ),
+    url("./assets/journey-ink-background.jpg") center 46% / cover no-repeat;
+  filter: contrast(1.08) saturate(0.86) brightness(0.8);
+  opacity: 0.54;
+  pointer-events: none;
 }
 
 .journey-atmosphere {
@@ -1557,20 +1595,20 @@ button {
   max-width: 620px;
   aspect-ratio: 1;
   border-radius: 50%;
-  filter: blur(42px);
-  opacity: 0.5;
+  filter: blur(54px);
+  opacity: 0.64;
 }
 
 .journey-atmosphere__glow--blue {
   top: -24%;
   left: -14%;
-  background: rgba(77, 153, 255, 0.66);
+  background: rgba(34, 106, 255, 0.72);
 }
 
 .journey-atmosphere__glow--rose {
   top: -19%;
   right: -13%;
-  background: rgba(225, 135, 255, 0.58);
+  background: rgba(133, 75, 235, 0.64);
 }
 
 .journey-atmosphere__beam {
@@ -1725,11 +1763,18 @@ button {
 }
 
 .journey-map__planet-glow {
-  fill: rgba(199, 255, 190, 0.21);
+  fill: rgba(158, 215, 255, 0.24);
 }
 
 .journey-map__globe {
   fill: url("#globe-wash");
+}
+
+.journey-map__sphere-spin {
+  transform-box: view-box;
+  transform-origin: 600px 405px;
+  animation: sphere-scroll 84s linear infinite;
+  will-change: transform;
 }
 
 .journey-map__landmass path {
@@ -1740,7 +1785,7 @@ button {
 }
 
 .journey-map__landmass-small {
-  fill: #69ae78 !important;
+  fill: #5aa7d2 !important;
   opacity: 0.84;
 }
 
@@ -1774,9 +1819,9 @@ button {
 
 .journey-map__globe-outline {
   fill: none;
-  stroke: rgba(241, 255, 234, 0.64);
+  stroke: rgba(214, 241, 255, 0.72);
   stroke-width: 2.3;
-  filter: drop-shadow(0 0 12px rgba(189, 255, 205, 0.46));
+  filter: drop-shadow(0 0 13px rgba(133, 205, 255, 0.58));
 }
 
 .journey-map__orbit {
@@ -1987,6 +2032,45 @@ button {
     0 0 12px rgba(255, 235, 151, 0.9);
 }
 
+.journey-continue {
+  position: absolute;
+  right: max(28px, calc(env(safe-area-inset-right) + 22px));
+  bottom: max(20px, calc(env(safe-area-inset-bottom) + 14px));
+  z-index: 7;
+  display: flex;
+  min-height: 38px;
+  padding: 8px 10px 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  align-items: center;
+  gap: 10px;
+  background: rgba(29, 35, 68, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 10px 32px rgba(22, 28, 59, 0.18);
+  color: rgba(255, 255, 255, 0.76);
+  font-family: "Bodoni 72", Didot, Georgia, serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-shadow: 0 1px 10px rgba(25, 31, 64, 0.62);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.journey-continue svg {
+  width: 34px;
+  height: 16px;
+  overflow: visible;
+  fill: none;
+  stroke: #fff2b9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.45;
+  filter: drop-shadow(0 0 6px rgba(255, 236, 166, 0.9));
+  animation: continue-nudge 2.6s ease-in-out infinite;
+}
+
 .back-button {
   z-index: 10;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -2029,9 +2113,23 @@ button {
 @keyframes atmosphere-drift {
   to {
     background-position:
-      18px 177px,
-      72px 178px,
-      118px 292px;
+      18px 195px,
+      72px 164px,
+      118px 290px,
+      41px 230px,
+      210px 664px;
+  }
+}
+
+@keyframes nebula-breathe {
+  0%,
+  100% {
+    opacity: 0.56;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.035);
   }
 }
 
@@ -2068,6 +2166,26 @@ button {
   50% {
     opacity: 0.94;
     transform: translate3d(7px, -4px, 0);
+  }
+}
+
+@keyframes sphere-scroll {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes continue-nudge {
+  0%,
+  72%,
+  100% {
+    transform: translateX(0);
+  }
+  84% {
+    transform: translateX(4px);
   }
 }
 
@@ -2109,8 +2227,10 @@ button {
     background-size:
       127px 119px,
       103px 97px,
-      171px 151px;
-    opacity: 0.58;
+      171px 151px,
+      77px 71px,
+      269px 243px;
+    opacity: 0.78;
   }
 
   .journey-counter {
@@ -2236,17 +2356,34 @@ button {
     font-size: 8.5px;
     letter-spacing: 0.11em;
   }
+
+  .journey-continue {
+    right: max(16px, calc(env(safe-area-inset-right) + 10px));
+    bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px));
+    min-height: 34px;
+    padding: 7px 9px 7px 12px;
+    gap: 8px;
+    font-size: 8px;
+  }
+
+  .journey-continue svg {
+    width: 29px;
+    height: 14px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .next-page::before,
+  .next-page::after,
   .journey-atmosphere::before,
   .journey-atmosphere::after,
   .journey-atmosphere__beam,
   .journey-map__planet-aura,
+  .journey-map__sphere-spin,
   .journey-map__cloud,
   .journey-map__orbit,
-  .journey-map__sparkles circle {
+  .journey-map__sparkles circle,
+  .journey-continue svg {
     animation: none;
   }
 
