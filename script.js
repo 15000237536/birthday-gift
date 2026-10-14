@@ -16,8 +16,12 @@ const memoryDate = document.querySelector("#memoryDate");
 const memoryNote = document.querySelector("#memoryNote");
 const memoryTags = document.querySelector("#memoryTags");
 const memoryDots = document.querySelector("#memoryDots");
+const coverImage = document.querySelector(".cover__image");
+const coverHintText = document.querySelector("#coverHintText");
+const pageTransition = document.querySelector("#pageTransition");
 const slideButtons = document.querySelectorAll("[data-slide]");
 const closeButtons = document.querySelectorAll("[data-close-dialog]");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 // Previous city drafts are kept here as source material but are no longer rendered.
 const archivedMemories = [
@@ -313,9 +317,14 @@ const memories = [
 ];
 
 let transitionTimer;
+let transitionReleaseTimer;
+let transitionRunning = false;
+let coverRevealed = false;
 let activeCityIndex = 0;
 let activePhotoIndex = 0;
 let pointerStartX = null;
+
+coverPage.tabIndex = -1;
 
 function renderCityMarkers() {
   cityLayer.replaceChildren();
@@ -449,73 +458,213 @@ function changeSlide(direction) {
   updateMemorySlide();
 }
 
-function showNextPage() {
+function syncCoverFocus() {
+  if (!coverImage?.naturalWidth || !coverImage?.naturalHeight || coverPage.hidden) {
+    return;
+  }
+
+  const rect = coverPage.getBoundingClientRect();
+  const scale = Math.max(
+    rect.width / coverImage.naturalWidth,
+    rect.height / coverImage.naturalHeight
+  );
+  const renderedWidth = coverImage.naturalWidth * scale;
+  const renderedHeight = coverImage.naturalHeight * scale;
+  const offsetX = (rect.width - renderedWidth) / 2;
+  const offsetY = (rect.height - renderedHeight) / 2;
+  const focusX = offsetX + coverImage.naturalWidth * scale * 0.557;
+  const focusY = offsetY + coverImage.naturalHeight * scale * 0.424;
+  const focusSize = coverImage.naturalWidth * scale * 0.18;
+
+  coverPage.style.setProperty("--focus-left", `${(focusX / rect.width) * 100}%`);
+  coverPage.style.setProperty("--focus-top", `${(focusY / rect.height) * 100}%`);
+  coverPage.style.setProperty("--focus-size", `${focusSize}px`);
+}
+
+function setCoverRevealed(revealed) {
+  coverRevealed = revealed;
+  coverPage.classList.toggle("is-revealed", revealed);
+  startButton.disabled = !revealed;
+  coverHintText.textContent = revealed ? "CLICK ANYWHERE TO ENTER" : "CLICK TO REVEAL";
+}
+
+function revealCover() {
+  if (coverPage.hidden || transitionRunning || coverRevealed) {
+    return;
+  }
+
+  setCoverRevealed(true);
+}
+
+function updateTransitionOrigin(event) {
+  const x = Number.isFinite(event?.clientX) ? event.clientX : window.innerWidth / 2;
+  const y = Number.isFinite(event?.clientY) ? event.clientY : window.innerHeight / 2;
+
+  pageTransition.style.setProperty("--transition-x", `${x}px`);
+  pageTransition.style.setProperty("--transition-y", `${y}px`);
+}
+
+function runPageTransition(updatePage, event) {
+  if (transitionRunning) {
+    return;
+  }
+
+  transitionRunning = true;
   window.clearTimeout(transitionTimer);
-  startButton.disabled = true;
-  coverPage.classList.add("is-leaving");
+  window.clearTimeout(transitionReleaseTimer);
+  updateTransitionOrigin(event);
+  pageTransition.classList.remove("is-covering", "is-revealing");
+  void pageTransition.offsetWidth;
+  pageTransition.classList.add("is-covering");
+
+  const coverDuration = reduceMotion.matches ? 30 : 620;
+  const revealDuration = reduceMotion.matches ? 30 : 760;
 
   transitionTimer = window.setTimeout(() => {
+    updatePage();
+    pageTransition.classList.remove("is-covering");
+    pageTransition.classList.add("is-revealing");
+
+    transitionReleaseTimer = window.setTimeout(() => {
+      pageTransition.classList.remove("is-revealing");
+      transitionRunning = false;
+    }, revealDuration);
+  }, coverDuration);
+}
+
+function showNextPage(event) {
+  if (!coverRevealed || transitionRunning) {
+    return;
+  }
+
+  runPageTransition(() => {
+    startButton.disabled = true;
     coverPage.hidden = true;
-    coverPage.classList.remove("is-leaving");
     nextPage.hidden = false;
+    nextPage.classList.remove("is-leaving");
 
     window.requestAnimationFrame(() => {
       nextPage.classList.add("is-visible");
       backButton.focus({ preventScroll: true });
     });
-  }, 700);
+  }, event);
 }
 
-function showCoverPage() {
-  window.clearTimeout(transitionTimer);
-  closeMemory();
-  afterPage.classList.remove("is-visible");
-  afterPage.hidden = true;
-  nextPage.classList.remove("is-visible");
-  nextPage.hidden = true;
-  coverPage.hidden = false;
-  startButton.disabled = false;
-
-  window.requestAnimationFrame(() => {
-    startButton.focus({ preventScroll: true });
-  });
-}
-
-function showAfterPage() {
-  window.clearTimeout(transitionTimer);
-  closeMemory();
-  continueButton.disabled = true;
-  nextPage.classList.add("is-leaving");
-
-  transitionTimer = window.setTimeout(() => {
+function showCoverPage(event) {
+  runPageTransition(() => {
+    closeMemory();
+    afterPage.classList.remove("is-visible");
+    afterPage.hidden = true;
+    nextPage.classList.remove("is-visible", "is-leaving");
     nextPage.hidden = true;
-    nextPage.classList.remove("is-leaving");
+    coverPage.hidden = false;
+    setCoverRevealed(false);
+
+    window.requestAnimationFrame(() => {
+      syncCoverFocus();
+      coverPage.focus({ preventScroll: true });
+    });
+  }, event);
+}
+
+function showAfterPage(event) {
+  runPageTransition(() => {
+    closeMemory();
+    continueButton.disabled = true;
+    nextPage.hidden = true;
+    nextPage.classList.remove("is-visible", "is-leaving");
     afterPage.hidden = false;
 
     window.requestAnimationFrame(() => {
       afterPage.classList.add("is-visible");
       afterBackButton.focus({ preventScroll: true });
     });
-  }, 700);
+  }, event);
 }
 
-function showJourneyPage() {
-  window.clearTimeout(transitionTimer);
-  afterPage.classList.remove("is-visible");
-  afterPage.hidden = true;
-  nextPage.hidden = false;
-  continueButton.disabled = false;
+function showJourneyPage(event) {
+  runPageTransition(() => {
+    afterPage.classList.remove("is-visible");
+    afterPage.hidden = true;
+    nextPage.hidden = false;
+    continueButton.disabled = false;
 
-  window.requestAnimationFrame(() => {
-    nextPage.classList.add("is-visible");
-    continueButton.focus({ preventScroll: true });
-  });
+    window.requestAnimationFrame(() => {
+      nextPage.classList.add("is-visible");
+      continueButton.focus({ preventScroll: true });
+    });
+  }, event);
 }
 
-startButton.addEventListener("click", showNextPage);
+coverPage.addEventListener("click", (event) => {
+  if (event.target.closest("#startButton")) {
+    return;
+  }
+
+  if (coverRevealed) {
+    showNextPage(event);
+  } else {
+    revealCover();
+  }
+});
+
+startButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  showNextPage(event);
+});
 backButton.addEventListener("click", showCoverPage);
 continueButton.addEventListener("click", showAfterPage);
 afterBackButton.addEventListener("click", showJourneyPage);
+
+document.addEventListener("keydown", (event) => {
+  if (
+    coverPage.hidden ||
+    transitionRunning ||
+    memoryDialog.open ||
+    (event.key !== "Enter" && event.key !== " ")
+  ) {
+    return;
+  }
+
+  if (event.target === startButton) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (coverRevealed) {
+    showNextPage(event);
+  } else {
+    revealCover();
+  }
+});
+
+coverImage.addEventListener("load", syncCoverFocus);
+window.addEventListener("resize", syncCoverFocus);
+window.addEventListener("orientationchange", syncCoverFocus);
+
+if (coverImage.complete) {
+  syncCoverFocus();
+}
+
+if (window.matchMedia("(pointer: fine)").matches) {
+  coverPage.addEventListener("pointermove", (event) => {
+    if (reduceMotion.matches || transitionRunning) {
+      return;
+    }
+
+    const rect = coverPage.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    coverPage.style.setProperty("--scene-shift-x", `${x * -8}px`);
+    coverPage.style.setProperty("--scene-shift-y", `${y * -6}px`);
+  });
+
+  coverPage.addEventListener("pointerleave", () => {
+    coverPage.style.setProperty("--scene-shift-x", "0px");
+    coverPage.style.setProperty("--scene-shift-y", "0px");
+  });
+}
 
 slideButtons.forEach((button) => {
   button.addEventListener("click", () => {
