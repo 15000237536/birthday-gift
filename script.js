@@ -322,6 +322,8 @@ let transitionReleaseTimer;
 let transitionRunning = false;
 let coverRevealed = false;
 let introCanReveal = false;
+let introReady = false;
+let introLeaving = false;
 let activeCityIndex = 0;
 let activePhotoIndex = 0;
 let pointerStartX = null;
@@ -331,7 +333,35 @@ coverPage.tabIndex = -1;
 function completeIntro() {
   introCanReveal = true;
   coverPage.classList.add("is-reveal-ready");
-  document.body.classList.remove("is-intro-play", "is-intro-load");
+  document.body.classList.remove("is-intro-load");
+}
+
+function setIntroReady() {
+  if (!introShell || introReady || introLeaving) {
+    return;
+  }
+
+  introReady = true;
+  introShell.disabled = false;
+  introShell.classList.add("is-ready");
+}
+
+function finishIntro() {
+  if (!introShell || !introReady || introLeaving) {
+    return;
+  }
+
+  introLeaving = true;
+  completeIntro();
+  document.body.classList.add("is-intro-leaving");
+
+  window.setTimeout(
+    () => {
+      introShell.hidden = true;
+      document.body.classList.remove("is-intro-leaving", "is-intro-load");
+    },
+    reduceMotion.matches ? 0 : 600
+  );
 }
 
 function waitForCoverImage() {
@@ -362,32 +392,29 @@ window.addEventListener("load", () => {
       introShell.hidden = true;
     }
     completeIntro();
+    document.body.classList.remove("is-intro-leaving", "is-intro-load");
     return;
   }
 
   if (reduceMotion.matches) {
     introShell.hidden = true;
     completeIntro();
+    document.body.classList.remove("is-intro-leaving", "is-intro-load");
     return;
   }
 
+  const loadingStartedAt = performance.now();
+
   waitForCoverImage().then(() => {
-    document.body.classList.add("is-intro-play");
-
-    const finish = () => {
-      introShell.hidden = true;
-      completeIntro();
-    };
-
-    introShell.addEventListener("animationend", (event) => {
-      if (event.target === introShell) {
-        finish();
-      }
-    });
-
-    window.setTimeout(finish, 1180);
+    const remainingLoadingTime = Math.max(
+      0,
+      520 - (performance.now() - loadingStartedAt)
+    );
+    window.setTimeout(setIntroReady, remainingLoadingTime);
   });
 });
+
+introShell?.addEventListener("click", finishIntro);
 
 function renderCityMarkers() {
   cityLayer.replaceChildren();
@@ -535,9 +562,9 @@ function syncCoverFocus() {
   const renderedHeight = coverImage.naturalHeight * scale;
   const offsetX = (rect.width - renderedWidth) / 2;
   const offsetY = (rect.height - renderedHeight) / 2;
-  const focusX = offsetX + coverImage.naturalWidth * scale * 0.557;
-  const focusY = offsetY + coverImage.naturalHeight * scale * 0.424;
-  const focusSize = coverImage.naturalWidth * scale * 0.18;
+  const focusX = offsetX + coverImage.naturalWidth * scale * 0.5387;
+  const focusY = offsetY + coverImage.naturalHeight * scale * 0.376;
+  const focusSize = coverImage.naturalWidth * scale * 0.1404;
 
   coverPage.style.setProperty("--focus-left", `${(focusX / rect.width) * 100}%`);
   coverPage.style.setProperty("--focus-top", `${(focusY / rect.height) * 100}%`);
@@ -684,6 +711,7 @@ document.addEventListener("keydown", (event) => {
     coverPage.hidden ||
     transitionRunning ||
     memoryDialog.open ||
+    event.target.closest("#introShell") ||
     (event.key !== "Enter" && event.key !== " ")
   ) {
     return;

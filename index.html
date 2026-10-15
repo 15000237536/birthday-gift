@@ -9,17 +9,65 @@
   </head>
   <body>
     <main class="site">
-      <div id="introShell" class="intro-shell" aria-hidden="true">
-        <div class="intro-shell__stars"></div>
-        <div class="intro-shell__wordmark">BIRTHDAY</div>
-        <div class="intro-shell__control">
-          <span class="intro-shell__ring"></span>
-          <span class="intro-shell__dot">
-            <span class="intro-shell__triangle"></span>
+      <button
+        id="introShell"
+        class="intro-shell"
+        type="button"
+        aria-label="Enter Site"
+        disabled
+      >
+        <span class="intro-shell__hold">
+          <span class="intro-shell__content">
+            <span class="intro-shell__svg" aria-hidden="true">
+              <svg viewBox="0 0 60 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M30.5283 28.676C27.5364 30.2438 25.9813 33.1218 26.0683 36.4378C26.1874 41.1275 28.2902 44.6994 32.8346 46.2963C36.1724 47.47 40.4397 46.7658 42.7158 43.8719C42.7576 43.7978 42.8129 43.8237 42.8318 43.8905C42.8691 44.0537 42.4095 45.3143 42.3078 45.5487C39.1409 53.1741 29.3056 53.7955 23.929 48.2358C18.0333 42.1295 19.7097 31.0094 28.5292 28.7883C28.8083 28.7184 30.1802 28.4373 30.3579 28.5211C30.4284 28.5579 30.4845 28.6052 30.5235 28.6795L30.5283 28.676Z"
+                  fill="currentColor"
+                />
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="59"
+                  height="82.5714"
+                  rx="29.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  opacity="0.35"
+                />
+                <rect
+                  class="intro-shell__line"
+                  x="0.5"
+                  y="0.5"
+                  width="59"
+                  height="82.5714"
+                  rx="29.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <rect
+                  x="7"
+                  y="7.78571"
+                  width="46"
+                  height="68"
+                  rx="23"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </span>
+            <span class="intro-shell__loading">
+              <span class="intro-shell__loading-label">Loading</span>
+              <span class="intro-shell__dots" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+              <span class="intro-shell__enter">Enter Site</span>
+            </span>
           </span>
-        </div>
-        <p class="intro-shell__caption">ENTERING</p>
-      </div>
+        </span>
+      </button>
 
       <section id="coverPage" class="cover" aria-label="19 岁生日旅行首页">
         <div class="cover__scene" aria-hidden="true">
