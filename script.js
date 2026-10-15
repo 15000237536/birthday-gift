@@ -19,6 +19,7 @@ const memoryDots = document.querySelector("#memoryDots");
 const coverImage = document.querySelector(".cover__image");
 const coverHintText = document.querySelector("#coverHintText");
 const pageTransition = document.querySelector("#pageTransition");
+const introShell = document.querySelector("#introShell");
 const slideButtons = document.querySelectorAll("[data-slide]");
 const closeButtons = document.querySelectorAll("[data-close-dialog]");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -320,11 +321,73 @@ let transitionTimer;
 let transitionReleaseTimer;
 let transitionRunning = false;
 let coverRevealed = false;
+let introCanReveal = false;
 let activeCityIndex = 0;
 let activePhotoIndex = 0;
 let pointerStartX = null;
 
 coverPage.tabIndex = -1;
+
+function completeIntro() {
+  introCanReveal = true;
+  coverPage.classList.add("is-reveal-ready");
+  document.body.classList.remove("is-intro-play", "is-intro-load");
+}
+
+function waitForCoverImage() {
+  if (!coverImage || (coverImage.complete && coverImage.naturalWidth > 0)) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const settle = () => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      resolve();
+    };
+
+    coverImage.addEventListener("load", settle, { once: true });
+    coverImage.addEventListener("error", settle, { once: true });
+    window.setTimeout(settle, 1800);
+  });
+}
+
+window.addEventListener("load", () => {
+  if (!introShell || coverPage.hidden) {
+    if (introShell) {
+      introShell.hidden = true;
+    }
+    completeIntro();
+    return;
+  }
+
+  if (reduceMotion.matches) {
+    introShell.hidden = true;
+    completeIntro();
+    return;
+  }
+
+  waitForCoverImage().then(() => {
+    document.body.classList.add("is-intro-play");
+
+    const finish = () => {
+      introShell.hidden = true;
+      completeIntro();
+    };
+
+    introShell.addEventListener("animationend", (event) => {
+      if (event.target === introShell) {
+        finish();
+      }
+    });
+
+    window.setTimeout(finish, 1180);
+  });
+});
 
 function renderCityMarkers() {
   cityLayer.replaceChildren();
@@ -489,7 +552,7 @@ function setCoverRevealed(revealed) {
 }
 
 function revealCover() {
-  if (coverPage.hidden || transitionRunning || coverRevealed) {
+  if (!introCanReveal || coverPage.hidden || transitionRunning || coverRevealed) {
     return;
   }
 
@@ -533,7 +596,7 @@ function runPageTransition(updatePage, event) {
 }
 
 function showNextPage(event) {
-  if (!coverRevealed || transitionRunning) {
+  if (!introCanReveal || !coverRevealed || transitionRunning) {
     return;
   }
 
@@ -712,13 +775,19 @@ renderCityMarkers();
 
 const pageParams = new URLSearchParams(window.location.search);
 
-if (pageParams.get("page") === "journey") {
+const requestedPage = pageParams.get("page");
+const deepLinkedPage =
+  requestedPage === "journey" || requestedPage === "after";
+
+document.body.classList.add(deepLinkedPage ? "is-intro-skip" : "is-intro-load");
+
+if (requestedPage === "journey") {
   coverPage.hidden = true;
   nextPage.hidden = false;
   nextPage.classList.add("is-visible");
 }
 
-if (pageParams.get("page") === "after") {
+if (requestedPage === "after") {
   coverPage.hidden = true;
   nextPage.hidden = true;
   afterPage.hidden = false;
@@ -729,7 +798,7 @@ const requestedMemoryParam = pageParams.get("memory");
 const requestedMemory = requestedMemoryParam === null ? -1 : Number(requestedMemoryParam);
 
 if (
-  pageParams.get("page") === "journey" &&
+  requestedPage === "journey" &&
   Number.isInteger(requestedMemory) &&
   requestedMemory >= 0 &&
   requestedMemory < memories.length

@@ -42,6 +42,132 @@ button {
   overflow: hidden;
 }
 
+.intro-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 420;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(126, 142, 255, 0.5), transparent 31%),
+    radial-gradient(ellipse at 17% 20%, rgba(74, 81, 208, 0.62), transparent 54%),
+    radial-gradient(ellipse at 84% 84%, rgba(151, 101, 219, 0.34), transparent 49%),
+    linear-gradient(158deg, #252773 0%, #26266d 38%, #1c1a56 68%, #17143f 100%);
+  color: rgba(244, 246, 255, 0.88);
+  isolation: isolate;
+  animation: intro-shell-out 480ms cubic-bezier(0.4, 0, 0.2, 1) 700ms both;
+}
+
+body.is-intro-skip .intro-shell,
+body.is-cover-revealed .intro-shell,
+body:not(.is-intro-load):not(.is-intro-play) .intro-shell {
+  display: none;
+}
+
+.intro-shell__stars {
+  position: absolute;
+  inset: -12%;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(194, 205, 255, 0.8) 0 0.9px, transparent 1.4px),
+    radial-gradient(circle, rgba(236, 211, 255, 0.72) 0 0.8px, transparent 1.2px);
+  background-position:
+    14px 22px,
+    71px 113px,
+    153px 47px;
+  background-size:
+    167px 151px,
+    233px 197px,
+    311px 283px;
+  mask-image: radial-gradient(circle at 50% 48%, #000 0%, rgba(0, 0, 0, 0.72) 46%, transparent 82%);
+  opacity: 0;
+  animation: intro-stars-in 820ms ease-out 180ms both;
+  will-change: opacity, transform;
+}
+
+.intro-shell__wordmark {
+  position: absolute;
+  top: clamp(40px, 7.4svh, 76px);
+  left: 50%;
+  color: rgba(247, 249, 255, 0.7);
+  font-family: "Bodoni 72", Didot, "Iowan Old Style", "Palatino Linotype",
+    "Book Antiqua", Georgia, serif;
+  font-size: clamp(10px, 0.92vw, 13px);
+  font-style: italic;
+  letter-spacing: 0.62em;
+  text-indent: 0.62em;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: intro-wordmark 520ms ease-out 160ms both;
+}
+
+.intro-shell__control {
+  position: relative;
+  display: grid;
+  width: clamp(140px, 18vmin, 188px);
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.intro-shell__ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(225, 233, 255, 0.34);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.86);
+  animation:
+    intro-ring-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both,
+    intro-ring-out 620ms cubic-bezier(0.4, 0, 0.2, 1) 560ms both;
+}
+
+.intro-shell__dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 54px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f8f7f4;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.56),
+    0 14px 38px rgba(65, 91, 168, 0.3);
+  transform: translate(-50%, -50%);
+  animation: intro-dot-grow 680ms cubic-bezier(0.7, 0, 0.2, 1) 340ms both;
+}
+
+.intro-shell__triangle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 15px solid rgba(45, 76, 158, 0.78);
+  opacity: 0;
+  transform: translate(-38%, -50%);
+  animation: intro-triangle 440ms ease-out 80ms both;
+}
+
+.intro-shell__caption {
+  position: absolute;
+  bottom: clamp(42px, 7.8svh, 82px);
+  left: 50%;
+  margin: 0;
+  color: rgba(232, 237, 255, 0.68);
+  font-family: "Bodoni 72", Didot, "Iowan Old Style", Georgia, serif;
+  font-size: clamp(8px, 0.7vw, 11px);
+  font-style: italic;
+  letter-spacing: 0.48em;
+  text-indent: 0.48em;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: intro-caption 500ms ease-out 180ms both;
+}
+
 .cover {
   --focus-left: 55.7%;
   --focus-top: 42.4%;
@@ -51,11 +177,18 @@ button {
   isolation: isolate;
   background: #11236d;
   cursor: pointer;
-  touch-action: manipulation;
+  opacity: 0;
+  transform: scale(1.012);
   transition:
-    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+.cover.is-reveal-ready {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .cover.is-leaving {
@@ -114,10 +247,23 @@ button {
   pointer-events: auto;
   transform: translate(-50%, -50%);
   transition:
-    background-color 500ms ease,
-    box-shadow 700ms ease,
-    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    background-color 420ms ease,
+    box-shadow 560ms ease;
   will-change: transform;
+}
+
+.cover.is-reveal-ready .cover__focus {
+  animation: cover-focus-in 860ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+}
+
+.cover.is-reveal-ready .cover__number {
+  animation: cover-number-in 620ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+.cover.is-reveal-ready .cover__hint {
+  animation:
+    cover-hint-in 520ms ease-out 540ms both,
+    hint-breathe 3.4s ease-in-out 1080ms infinite;
 }
 
 .cover.is-revealed .cover__focus {
@@ -139,7 +285,7 @@ button {
   text-indent: -0.045em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateY(0);
-  transition: transform 780ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cover__greeting {
@@ -158,9 +304,9 @@ button {
   text-indent: 0.34em;
   transform: translateY(7px);
   transition:
-    letter-spacing 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 640ms ease 160ms,
-    transform 760ms cubic-bezier(0.22, 1, 0.36, 1) 100ms;
+    letter-spacing 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 360ms ease 90ms,
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1) 60ms;
 }
 
 .cover.is-revealed .cover__number {
@@ -225,7 +371,7 @@ button {
   transition:
     opacity 420ms ease,
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-  animation: hint-breathe 3.4s ease-in-out infinite;
+  opacity: 0;
 }
 
 .cover__hint-dot {
@@ -242,7 +388,7 @@ button {
 .cover.is-revealed .cover__hint {
   opacity: 0;
   transform: translateX(-50%) translateY(8px);
-  animation: none;
+  animation: none !important;
 }
 
 .start-button {
@@ -270,12 +416,12 @@ button {
   transform: translate(-50%, 12px);
   backdrop-filter: blur(12px);
   transition:
-    border-color 300ms ease,
-    background-color 300ms ease,
-    box-shadow 300ms ease,
-    color 300ms ease,
-    opacity 480ms ease 120ms,
-    transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 100ms;
+    border-color 240ms ease,
+    background-color 240ms ease,
+    box-shadow 240ms ease,
+    color 240ms ease,
+    opacity 340ms ease 90ms,
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1) 60ms;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -351,6 +497,130 @@ button {
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes intro-shell-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes intro-stars-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 0.86;
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-wordmark {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes intro-caption {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes intro-ring-in {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-ring-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes intro-dot-grow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  32% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(19);
+  }
+}
+
+@keyframes intro-triangle {
+  from {
+    opacity: 0;
+    transform: translate(-38%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-38%, -50%) scale(1);
+  }
+}
+
+@keyframes cover-focus-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes cover-number-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cover-hint-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 0.68;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -1649,6 +1919,33 @@ button {
   .page-transition.is-revealing::before,
   .page-transition.is-revealing::after {
     animation-duration: 30ms;
+  }
+
+  .intro-shell,
+  .intro-shell__stars,
+  .intro-shell__wordmark,
+  .intro-shell__ring,
+  .intro-shell__dot,
+  .intro-shell__triangle,
+  .intro-shell__caption,
+  .cover.is-reveal-ready .cover__focus,
+  .cover.is-reveal-ready .cover__number,
+  .cover.is-reveal-ready .cover__hint {
+    animation: none;
+  }
+
+  .intro-shell {
+    display: none;
+  }
+
+  .cover.is-reveal-ready {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cover__hint {
+    opacity: 0.68;
+    transform: translateX(-50%);
   }
 
   .journey-map__route,
