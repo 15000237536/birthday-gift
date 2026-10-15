@@ -562,9 +562,9 @@ function syncCoverFocus() {
   const renderedHeight = coverImage.naturalHeight * scale;
   const offsetX = (rect.width - renderedWidth) / 2;
   const offsetY = (rect.height - renderedHeight) / 2;
-  const focusX = offsetX + coverImage.naturalWidth * scale * 0.5387;
-  const focusY = offsetY + coverImage.naturalHeight * scale * 0.376;
-  const focusSize = coverImage.naturalWidth * scale * 0.1404;
+  const focusX = offsetX + coverImage.naturalWidth * scale * 0.538927;
+  const focusY = offsetY + coverImage.naturalHeight * scale * 0.378182;
+  const focusSize = coverImage.naturalWidth * scale * 0.139926;
 
   coverPage.style.setProperty("--focus-left", `${(focusX / rect.width) * 100}%`);
   coverPage.style.setProperty("--focus-top", `${(focusY / rect.height) * 100}%`);

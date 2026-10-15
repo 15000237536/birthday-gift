@@ -205,9 +205,9 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
 }
 
 .cover {
-  --focus-left: 53.87%;
-  --focus-top: 37.6%;
-  --focus-size: max(14.04vw, 32.34svh);
+  --focus-left: 53.8927%;
+  --focus-top: 37.8182%;
+  --focus-size: max(13.9926vw, 32.2423svh);
   --scene-shift-x: 0px;
   --scene-shift-y: 0px;
   isolation: isolate;
