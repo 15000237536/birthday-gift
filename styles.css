@@ -6,6 +6,30 @@
   --focus: #8295ad;
 }
 
+@property --cover-mask-transparent {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --cover-mask-black {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 150%;
+}
+
+@property --cover-number-mask-transparent {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --cover-number-mask-black {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 150%;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -61,8 +85,8 @@ button {
   transform: scale(1);
   transform-origin: center;
   transition:
-    opacity 600ms cubic-bezier(0.62, 0, 0.22, 1),
-    transform 600ms cubic-bezier(0.62, 0, 0.22, 1);
+    opacity 450ms cubic-bezier(0.45, 0, 0.55, 1),
+    transform 450ms cubic-bezier(0.45, 0, 0.55, 1);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -74,6 +98,10 @@ body.is-intro-leaving .intro-shell {
   opacity: 0;
   transform: scale(1.1);
   pointer-events: none;
+}
+
+body.is-cover-entering .cover {
+  cursor: wait;
 }
 
 body.is-intro-skip .intro-shell,
@@ -213,8 +241,8 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
   isolation: isolate;
   background: #11236d;
   cursor: pointer;
-  opacity: 0;
-  transform: scale(1.012);
+  opacity: 1;
+  transform: scale(1);
   transition:
     opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -234,13 +262,29 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
 }
 
 .cover__scene {
+  --cover-mask-transparent: 100%;
+  --cover-mask-black: 150%;
   position: absolute;
   inset: 0;
   z-index: 1;
   overflow: hidden;
   transform: translate3d(var(--scene-shift-x), var(--scene-shift-y), 0) scale(1.006);
+  -webkit-mask-image: linear-gradient(
+    -15deg,
+    transparent var(--cover-mask-transparent),
+    black var(--cover-mask-black)
+  );
+  mask-image: linear-gradient(
+    -15deg,
+    transparent var(--cover-mask-transparent),
+    black var(--cover-mask-black)
+  );
   transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+.cover.is-reveal-ready .cover__scene {
+  animation: cover-scene-reveal 6000ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .cover__scene::after {
@@ -286,18 +330,15 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
   will-change: transform;
 }
 
-.cover.is-reveal-ready .cover__focus {
-  animation: cover-focus-in 860ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
-}
-
 .cover.is-reveal-ready .cover__number {
-  animation: cover-number-in 620ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+  animation: cover-number-reveal 5200ms cubic-bezier(0.16, 1, 0.3, 1) 800ms
+    both;
 }
 
 .cover.is-reveal-ready .cover__hint {
   animation:
-    cover-hint-in 520ms ease-out 540ms both,
-    hint-breathe 3.4s ease-in-out 1080ms infinite;
+    cover-hint-in 900ms ease-out 4400ms both,
+    hint-breathe 3.4s ease-in-out 5300ms infinite;
 }
 
 .cover.is-revealed .cover__focus {
@@ -308,6 +349,8 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
 }
 
 .cover__number {
+  --cover-number-mask-transparent: 100%;
+  --cover-number-mask-black: 150%;
   position: absolute;
   inset: 0;
   display: grid;
@@ -322,6 +365,16 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
   text-indent: -0.045em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateY(0);
+  -webkit-mask-image: linear-gradient(
+    -15deg,
+    transparent var(--cover-number-mask-transparent),
+    black var(--cover-number-mask-black)
+  );
+  mask-image: linear-gradient(
+    -15deg,
+    transparent var(--cover-number-mask-transparent),
+    black var(--cover-number-mask-black)
+  );
   transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -557,25 +610,34 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
   }
 }
 
-@keyframes cover-focus-in {
+@keyframes cover-scene-reveal {
   from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.94);
+    --cover-mask-transparent: 100%;
+    --cover-mask-black: 150%;
+    filter: saturate(0.72) brightness(0.9) blur(7px);
+    transform: translate3d(var(--scene-shift-x), var(--scene-shift-y), 0)
+      scale(1.055);
+  }
+  35% {
+    filter: saturate(0.88) brightness(0.98) blur(2px);
   }
   to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    --cover-mask-transparent: 0%;
+    --cover-mask-black: 0%;
+    filter: none;
+    transform: translate3d(var(--scene-shift-x), var(--scene-shift-y), 0)
+      scale(1.006);
   }
 }
 
-@keyframes cover-number-in {
+@keyframes cover-number-reveal {
   from {
-    opacity: 0;
-    transform: translateY(5px);
+    --cover-number-mask-transparent: 100%;
+    --cover-number-mask-black: 150%;
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    --cover-number-mask-transparent: 0%;
+    --cover-number-mask-black: 0%;
   }
 }
 
@@ -1890,10 +1952,18 @@ body:not(.is-intro-load):not(.is-intro-leaving) .intro-shell {
   .intro-shell,
   .intro-shell__line,
   .intro-shell__dots i,
-  .cover.is-reveal-ready .cover__focus,
+  .cover.is-reveal-ready .cover__scene,
   .cover.is-reveal-ready .cover__number,
   .cover.is-reveal-ready .cover__hint {
     animation: none;
+  }
+
+  .cover.is-reveal-ready .cover__scene,
+  .cover.is-reveal-ready .cover__number {
+    --cover-mask-transparent: 0%;
+    --cover-mask-black: 0%;
+    --cover-number-mask-transparent: 0%;
+    --cover-number-mask-black: 0%;
   }
 
   .intro-shell {

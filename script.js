@@ -324,6 +324,7 @@ let coverRevealed = false;
 let introCanReveal = false;
 let introReady = false;
 let introLeaving = false;
+let introRevealTimer;
 let activeCityIndex = 0;
 let activePhotoIndex = 0;
 let pointerStartX = null;
@@ -333,7 +334,21 @@ coverPage.tabIndex = -1;
 function completeIntro() {
   introCanReveal = true;
   coverPage.classList.add("is-reveal-ready");
+  document.body.classList.remove("is-cover-entering", "is-intro-load");
+}
+
+function beginCoverReveal() {
+  window.clearTimeout(introRevealTimer);
+  coverPage.classList.add("is-reveal-ready");
   document.body.classList.remove("is-intro-load");
+
+  introRevealTimer = window.setTimeout(
+    () => {
+      introCanReveal = true;
+      document.body.classList.remove("is-cover-entering");
+    },
+    reduceMotion.matches ? 0 : 6000
+  );
 }
 
 function setIntroReady() {
@@ -352,15 +367,15 @@ function finishIntro() {
   }
 
   introLeaving = true;
-  completeIntro();
-  document.body.classList.add("is-intro-leaving");
+  document.body.classList.add("is-intro-leaving", "is-cover-entering");
 
   window.setTimeout(
     () => {
       introShell.hidden = true;
       document.body.classList.remove("is-intro-leaving", "is-intro-load");
+      beginCoverReveal();
     },
-    reduceMotion.matches ? 0 : 600
+    reduceMotion.matches ? 0 : 450
   );
 }
 
@@ -807,7 +822,8 @@ const requestedPage = pageParams.get("page");
 const deepLinkedPage =
   requestedPage === "journey" || requestedPage === "after";
 
-document.body.classList.add(deepLinkedPage ? "is-intro-skip" : "is-intro-load");
+document.body.classList.toggle("is-intro-skip", deepLinkedPage);
+document.body.classList.toggle("is-intro-load", !deepLinkedPage);
 
 if (requestedPage === "journey") {
   coverPage.hidden = true;
